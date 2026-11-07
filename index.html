@@ -1,0 +1,110 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101116"><title>AI Reel Creator · v0.6</title><style>body{margin:0;background:#101116;color:#f5f5f6;font:16px -apple-system,BlinkMacSystemFont,Arial,sans-serif}main{max-width:550px;margin:auto;padding:24px 18px 70px}h1{font-size:29px;margin:8px 0}p,small{color:#aab0bd;line-height:1.5}.card{background:#1c1e27;border:1px solid #353844;border-radius:17px;padding:17px;margin:15px 0}label{display:block;font-weight:650;margin-bottom:9px}input[type=file]{width:100%;font-size:15px}button,a.save{display:block;box-sizing:border-box;text-align:center;width:100%;padding:15px;border:0;border-radius:13px;background:#e4b966;color:#151515;font-size:17px;font-weight:750;text-decoration:none;margin-top:12px}button:disabled{opacity:.4}#preview{width:240px;max-width:100%;aspect-ratio:9/16;display:block;margin:15px auto;background:black;border-radius:12px}#status{white-space:pre-line;color:#d2d6df}progress{width:100%;height:13px}select{width:100%;padding:12px;border-radius:10px;background:#2b2e3b;color:white;border:1px solid #555} .note{font-size:13px} .hidden{display:none}</style></head><body><main><h1>🎬 AI Reel Creator</h1><p>Versiunea 0.6 · iPhone · 9:16 / 16:9 · durată flexibilă · muzica ta</p><div class="card"><label for="media">1. Selectează fotografii și videoclipuri</label><input id="media" type="file" accept="image/*,video/*" multiple><p class="note" id="count">Niciun fișier selectat. Pentru selecții multiple, alege din biblioteca Fotografii.</p></div><div class="card"><label for="music">2. Selectează muzica ta</label><input id="music" type="file" accept="audio/*,.mp3,.m4a,.wav"><p class="note">Folosește muzică pentru care ai drepturi de utilizare.</p></div><div class="card"><label for="style">3. Stilul montajului</label><select id="style"><option value="cinematic">Cinematic · tranziții line și zoom lent</option><option value="party">Party · tăieturi dinamice</option><option value="travel">Travel · panoramare și tranziții</option><option value="clean">Simplu · fără tranziții</option></select><p class="note">Analizăm local pulsațiile audio și încercăm să potrivim schimbările de cadre cu muzica. Dacă analiza nu reușește, folosim BPM-ul de rezervă.</p><label style="font-weight:500"><input id="autobeat" type="checkbox" checked> Detectează automat ritmul din melodie (experimental)</label><p class="note" id="beatinfo">Analiza începe când creezi Reel-ul.</p><label for="bpm">BPM de rezervă</label><input id="bpm" type="number" min="60" max="200" value="120" style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;background:#2b2e3b;color:white;border:1px solid #555;font-size:16px"><p class="note">Folosit când analiza automată este dezactivată sau nu identifică suficiente pulsații.</p></div><div class="card"><label for="smart">4. Selecție inteligentă de cadre</label><label style="font-weight:500"><input id="smart" type="checkbox" checked> Analizează local videoclipurile și alege un moment promițător</label><p class="note">Analiză experimentală: verifică luminozitatea, contrastul și claritatea câtorva cadre. Nu recunoaște persoane, emoții sau subiecte și nu garantează cel mai bun moment.</p><p class="note" id="smartinfo">Analiza începe după apăsarea butonului de creare.</p></div><div class="card"><label for="format">5. Formatul videoclipului</label><select id="format"><option value="9:16">9:16 · Reel / Shorts / TikTok</option><option value="16:9">16:9 · YouTube / Travel</option></select><label for="duration" style="margin-top:16px">Durata videoclipului</label><select id="duration"><option value="30">30 secunde</option><option value="60">1 minut</option><option value="180">3 minute</option><option value="300">5 minute</option><option value="600">10 minute</option><option value="900">15 minute</option><option value="1800">30 minute</option><option value="3600">60 minute (experimental)</option><option value="custom">Personalizat</option></select><div id="customBox" class="hidden"><label for="customMinutes" style="margin-top:12px">Minute personalizate (1–60)</label><input id="customMinutes" type="number" min="1" max="60" value="20" style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;background:#2b2e3b;color:white;border:1px solid #555;font-size:16px"></div><p class="note">Pentru videoclipuri lungi, Safari poate rămâne fără memorie sau poate întrerupe înregistrarea. Încearcă întâi 1 minut la 540p. Muzica mai scurtă se repetă automat. Înregistrarea durează aproximativ cât videoclipul.</p></div><div class="card"><label for="fit">6. Încadrarea imaginilor</label><select id="fit"><option value="cover">Umple ecranul (decupare automată)</option><option value="contain">Păstrează imaginea întreagă (benzi negre)</option></select><label for="order" style="margin-top:16px">Ordinea materialelor</label><select id="order"><option value="original">În ordinea selectată</option><option value="shuffle">Amestecă automat ordinea</option></select><p class="note">În modul 16:9, opțiunea „Păstrează imaginea întreagă” evită tăierea materialelor verticale.</p></div><div class="card"><label for="quality">7. Calitatea exportului</label><select id="quality"><option value="540">540 × 960 · rapid (recomandat la primul test)</option><option value="720">720 × 1280 · HD</option><option value="1080">1080 × 1920 · Full HD (solicitant pentru iPhone)</option></select><button id="go">Creează videoclipul</button><p id="status" role="status">Pregătit pentru selecție.</p><progress id="progress" max="30" value="0" class="hidden"></progress><canvas id="preview" width="540" height="960"></canvas><video id="playback" controls playsinline class="hidden" style="width:100%;border-radius:12px"></video><a id="download" class="save hidden">Salvează Reel-ul</a></div><p class="note">Ordinea aleatorie nu este o selecție semantică. Detectarea ritmului și selecția cadrelor sunt aproximative, fără model AI de recunoaștere a scenelor. Analiza ritmului acoperă începutul melodiei; pentru restul montajului folosim BPM-ul selectat. Procesarea are loc în timp real, local în Safari. La exporturi lungi memoria iPhone-ului poate fi insuficientă: 60 de minute este o opțiune experimentală, nu un export garantat. Nu bloca ecranul. Fișierele nu sunt încărcate pe server.</p></main><script>
+// Detectare aproximativă de atacuri sonore din amplitudine; nu este recunoaștere AI de scene.
+async function detectOnsets(file, ac){
+  const data=await file.arrayBuffer();
+  const buffer=await ac.decodeAudioData(data);
+  const channel=buffer.getChannelData(0), rate=buffer.sampleRate;
+  const hop=1024, count=Math.min(Math.floor(channel.length/hop),Math.ceil(31*rate/hop));
+  if(count<50)return [];
+  const energies=new Float32Array(count);
+  for(let i=0;i<count;i++){
+    let sum=0; const start=i*hop;
+    for(let j=0;j<hop;j+=4){const v=channel[start+j]||0;sum+=v*v;}
+    energies[i]=Math.sqrt(sum/(hop/4));
+  }
+  const novelty=new Float32Array(count);
+  for(let i=2;i<count;i++)novelty[i]=Math.max(0,energies[i]-0.5*(energies[i-1]+energies[i-2]));
+  const sorted=Array.from(novelty).sort((a,b)=>a-b), threshold=sorted[Math.floor(sorted.length*.82)]||0;
+  if(threshold<0.00005)return [];
+  const peaks=[];
+  for(let i=2;i<count-2;i++){
+    if(novelty[i]<threshold||novelty[i]<novelty[i-1]||novelty[i]<novelty[i+1])continue;
+    const t=i*hop/rate;
+    if(t<.35||t>29.8)continue;
+    if(peaks.length&&t-peaks[peaks.length-1].t<.24){if(novelty[i]>peaks[peaks.length-1].strength)peaks[peaks.length-1]={t,strength:novelty[i]};}
+    else peaks.push({t,strength:novelty[i]});
+  }
+  return peaks.map(p=>p.t);
+}
+function cutTimes(onsets, style, bpm, itemCount, duration){
+  const beat=60/bpm, target=(style==='party'?4:8)*beat;
+  const nominal=Math.min(7,Math.max(style==='party'?1.2:2.1,target));
+  const cuts=[0];let t=0;
+  while(t+nominal<duration-.8&&cuts.length<4000){
+    const ideal=t+nominal;
+    const nearby=ideal>30?[]:onsets.filter(x=>x>t+Math.max(.85,nominal*.65)&&Math.abs(x-ideal)<Math.min(.6,nominal*.25));
+    const next=nearby.length?nearby.reduce((a,b)=>Math.abs(a-ideal)<Math.abs(b-ideal)?a:b):ideal;
+    if(next<=t+.5)break;
+    cuts.push(next);t=next;
+  }
+  cuts.push(duration);return cuts;
+}
+const $=id=>document.getElementById(id),canvas=$('preview'),ctx=canvas.getContext('2d',{alpha:false});let busy=false;
+$('duration').addEventListener('change',()=>{$('customBox').classList.toggle('hidden',$('duration').value!=='custom')});
+$('format').addEventListener('change',()=>{canvas.style.aspectRatio=$('format').value==='16:9'?'16 / 9':'9 / 16';});
+$('media').addEventListener('change',()=>{$('count').textContent=`${$('media').files.length} fișiere selectate`;});
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+function loadImage(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>resolve({type:'image',element:img,url});img.onerror=()=>{URL.revokeObjectURL(url);reject(Error('Nu pot deschide imaginea '+file.name))};img.src=url})}
+function loadVideo(file){return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),v=document.createElement('video');v.preload='auto';v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.onloadeddata=()=>resolve({type:'video',element:v,url});v.onerror=()=>{URL.revokeObjectURL(url);reject(Error('Nu pot deschide videoclipul '+file.name))};v.src=url;v.load()})}
+function cover(el,scaleExtra=1,dx=0,dy=0,opacity=1){const sw=el.videoWidth||el.naturalWidth,sh=el.videoHeight||el.naturalHeight;if(!sw||!sh)return;const mode=$('fit').value;const scale=(mode==='contain'?Math.min(canvas.width/sw,canvas.height/sh):Math.max(canvas.width/sw,canvas.height/sh))*(mode==='contain'?1:scaleExtra),w=sw*scale,h=sh*scale;ctx.save();ctx.globalAlpha=opacity;ctx.drawImage(el,(canvas.width-w)/2+(mode==='contain'?0:dx),(canvas.height-h)/2+(mode==='contain'?0:dy),w,h);ctx.restore()}
+function drawItem(item,progress,style,opacity=1){let zoom=1,dx=0,dy=0;if(item.type==='image'&&style!=='clean'){zoom=1.04+progress*(style==='travel'?.10:.07);dx=(progress-.5)*canvas.width*(style==='travel'?.045:.018);dy=(.5-progress)*canvas.height*.012}cover(item.element,zoom,dx,dy,opacity)}
+// Euristică locală: compară eșantioane din videoclip, fără încărcare pe server.
+// Evităm începutul/finalul și cadrele foarte întunecate sau neclare.
+async function rankVideoMoments(item, update){
+  const v=item.element, duration=v.duration;
+  if(!Number.isFinite(duration)||duration<2)return 0;
+  const probe=document.createElement('canvas');probe.width=96;probe.height=54;
+  const pc=probe.getContext('2d',{willReadFrequently:true});
+  const count=Math.min(7,Math.max(3,Math.floor(duration/2)));
+  let best={score:-Infinity,time:0};
+  for(let k=0;k<count;k++){
+    const t=Math.min(duration-.15,Math.max(.15,duration*(.12+.76*(k+.5)/count)));
+    await seek(v,t); await wait(45);
+    try{
+      pc.drawImage(v,0,0,96,54);
+      const pix=pc.getImageData(0,0,96,54).data;
+      const luma=new Float32Array(96*54);let mean=0;
+      for(let i=0;i<luma.length;i++){
+        const q=i*4; const y=(.2126*pix[q]+.7152*pix[q+1]+.0722*pix[q+2])/255;
+        luma[i]=y;mean+=y;
+      }
+      mean/=luma.length;let variance=0,edges=0;
+      for(let y=1;y<53;y+=2)for(let x=1;x<95;x+=2){
+        const i=y*96+x;variance+=(luma[i]-mean)**2;
+        edges+=Math.abs(luma[i]-luma[i-1])+Math.abs(luma[i]-luma[i-96]);
+      }
+      variance/=1200;edges/=1200;
+      const exposure=Math.max(0,1-Math.abs(mean-.52)*2.1);
+      const score=exposure*.40+Math.min(1,variance*10)*.22+Math.min(1,edges*4)*.38;
+      if(score>best.score)best={score,time:t};
+    }catch(err){console.warn('Cadru indisponibil',err)}
+    update?.(k+1,count);
+  }
+  v.pause();return best.time;
+}
+function seek(v,t){return new Promise(resolve=>{if(Math.abs(v.currentTime-t)<.08)return resolve();const timer=setTimeout(resolve,2500);v.addEventListener('seeked',()=>{clearTimeout(timer);resolve()},{once:true});try{v.currentTime=t}catch{clearTimeout(timer);resolve()}})}
+$('go').onclick=async()=>{if(busy)return;const files=[...$('media').files],music=$('music').files[0];if(!files.length||!music){$('status').textContent='Selectează cel puțin un fișier vizual și un fișier audio.';return}if(!('MediaRecorder'in window)||!canvas.captureStream){$('status').textContent='Acest Safari nu acceptă exportul video local. Încearcă o versiune actualizată de Safari.';return}busy=true;$('go').disabled=true;$('download').classList.add('hidden');$('playback').classList.add('hidden');$('progress').classList.remove('hidden');let items=[],audioUrl,ac,stream,rec,animation,outputUrl;try{
+const duration=$('duration').value==='custom'?Math.max(60,Math.min(3600,(Number($('customMinutes').value)||1)*60)):Number($('duration').value);$('progress').max=duration;$('progress').value=0;$('status').textContent='Pregătesc '+files.length+' fișiere și verific muzica…';const q=Number($('quality').value);if($('format').value==='16:9'){canvas.width=Math.round(q*16/9);canvas.height=q}else{canvas.width=q;canvas.height=Math.round(q*16/9)}for(const f of files){items.push(f.type.startsWith('video/')?await loadVideo(f):await loadImage(f))}if($('order').value==='shuffle'){for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]]}}
+const mime=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp8,opus','video/webm'].find(m=>MediaRecorder.isTypeSupported(m));if(!mime)throw Error('Browserul nu are un format video de înregistrare compatibil.');
+ac=new (window.AudioContext||window.webkitAudioContext)();await ac.resume();const destination=ac.createMediaStreamDestination();const audio=document.createElement('audio');audioUrl=URL.createObjectURL(music);audio.src=audioUrl;audio.preload='auto';audio.loop=true;await new Promise((resolve,reject)=>{audio.oncanplay=resolve;audio.onerror=()=>reject(Error('Fișierul audio nu poate fi redat.'));audio.load()});const node=ac.createMediaElementSource(audio);node.connect(destination);const videoStream=canvas.captureStream(24);stream=new MediaStream([...videoStream.getVideoTracks(),...destination.stream.getAudioTracks()]);
+const chunks=[];rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:duration>300?1200000:2500000});const done=new Promise((resolve,reject)=>{rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};rec.onerror=e=>reject(Error(e.error?.message||'Eroare de înregistrare'));rec.onstop=resolve});
+const style=$('style').value,bpm=Math.max(60,Math.min(200,Number($('bpm').value)||120));
+let onsets=[];
+if($('autobeat').checked){
+  $('status').textContent='Analizez pulsațiile muzicii pe iPhone…';
+  try{onsets=await detectOnsets(music,ac)}catch(err){console.warn('Analiza audio nu a reușit',err)}
+}
+$('beatinfo').textContent=onsets.length>=4?`Am găsit ${onsets.length} atacuri sonore candidate. Tăieturile vor fi aliniate aproximativ.`:'Nu am identificat un ritm suficient de clar; folosesc BPM-ul de rezervă.';
+if($('smart').checked){
+  const videoItems=items.filter(x=>x.type==='video');
+  for(let i=0;i<videoItems.length;i++){
+    const item=videoItems[i];
+    $('status').textContent=`Analizez videoclipul ${i+1}/${videoItems.length}: ${i+1}…`;
+    item.bestTime=await rankVideoMoments(item,(k,n)=>{$('smartinfo').textContent=`Analiză video ${i+1}/${videoItems.length} · cadru ${k}/${n}`});
+  }
+  $('smartinfo').textContent=videoItems.length?`Am analizat ${videoItems.length} videoclipuri și am ales puncte de pornire aproximative.`:'Nu sunt videoclipuri de analizat; fotografiile vor fi montate în ordinea selectată.';
+}else $('smartinfo').textContent='Selecția inteligentă este dezactivată.';
+const cuts=cutTimes(onsets.length>=4?onsets:[],style,bpm,items.length,duration),segments=cuts.length-1;let active=-1;const videos=items.filter(x=>x.type==='video');const started=performance.now();function frame(now){const elapsed=Math.min(duration-.001,(now-started)/1000);const segment=Math.max(0,Math.min(segments-1,cuts.findIndex((v,i)=>i<cuts.length-1&&elapsed>=v&&elapsed<cuts[i+1])));const slot=cuts[segment+1]-cuts[segment];const index=segment%items.length;const item=items[index];const phase=(elapsed-cuts[segment])/slot;if(segment!==active){active=segment;for(const other of videos){if(other!==item)other.element.pause()}if(item.type==='video'){const v=item.element;const desired=Math.min(Math.max(0,v.duration-0.2),Math.max(0,(item.bestTime??(v.duration/2))-Math.min(slot/2,1.5)));seek(v,desired).then(()=>v.play().catch(()=>{}))}}ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);drawItem(item,phase,style);if(style!=='clean'&&style!=='party'&&segment>0){const fade=Math.min(.32,slot*.18);const local=elapsed-cuts[segment];if(local<fade){const previous=items[(segment-1)%items.length];drawItem(previous,1,style,1-local/fade)}}$('progress').value=elapsed;$('status').textContent=`Montaj ${style}: ${Math.floor(elapsed)} / ${duration} secunde · secvența ${segment+1}/${segments}\nPăstrează Safari deschis și ecranul activ.`;if(now-started<duration*1000)animation=requestAnimationFrame(frame)}
+cover(items[0].element);rec.start(10000);await audio.play();animation=requestAnimationFrame(frame);await wait(duration*1000);cancelAnimationFrame(animation);for(const v of videos)v.element.pause();audio.pause();if(rec.state!=='inactive')rec.stop();await done;const blob=new Blob(chunks,{type:mime.split(';')[0]});if(!blob.size)throw Error('Nu s-a generat un fișier video.');outputUrl=URL.createObjectURL(blob);$('playback').src=outputUrl;$('playback').classList.remove('hidden');$('download').href=outputUrl;$('download').download='AI-Reel-Creator-'+duration+'s-'+$('format').value.replace(':','x')+'.'+(mime.includes('mp4')?'mp4':'webm');$('download').classList.remove('hidden');$('status').textContent='Video v0.6 generat!  Verifică previzualizarea și apasă Salvează Reel-ul. Pe iPhone, poți folosi apoi meniul Partajare → Salvează în Fișiere.';$('progress').value=duration;
+}catch(e){$('status').textContent='Nu am putut finaliza exportul: '+e.message+'\nÎncearcă mai puține videoclipuri sau calitatea 540 × 960.';console.error(e)}finally{cancelAnimationFrame(animation);if(rec?.state==='recording')rec.stop();stream?.getTracks().forEach(t=>t.stop());if(ac)await ac.close().catch(()=>{});items.forEach(x=>URL.revokeObjectURL(x.url));if(audioUrl)URL.revokeObjectURL(audioUrl);busy=false;$('go').disabled=false}}
+</script></body></html>
